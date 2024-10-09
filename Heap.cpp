@@ -10,8 +10,7 @@ struct Employee
     Employee *left;
     Employee *right;
 
-    Employee(string name = "", float salary = 0.0f)
-        : name(name), salary(salary), left(nullptr), right(nullptr) {}
+    Employee(string name = "", float salary = 0.0f) : name(name), salary(salary), left(nullptr), right(nullptr) {}
 };
 
 // Función para intercambiar los valores de dos Employees
@@ -99,7 +98,7 @@ int main()
     for (int i = 1; i < 1000; ++i)
     {
         string name = "Employee_" + to_string(i);
-        float salary = 40000.0f + (i % 10) * 5000.0f;
+        float salary = 40000.0f + i;
         Employee *nuevoEmployee = new Employee(name, salary);
 
         if (i % 2 == 1)
