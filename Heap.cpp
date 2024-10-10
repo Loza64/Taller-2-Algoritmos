@@ -6,120 +6,62 @@ using namespace std;
 struct Employee
 {
     string name;
-    float salary;
-    Employee *left;
-    Employee *right;
-
-    Employee(string name = "", float salary = 0.0f) : name(name), salary(salary), left(nullptr), right(nullptr) {}
+    int salary;
 };
 
-// Función para intercambiar los valores de dos Employees
-void swap(Employee *a, Employee *b)
+void heapify(Employee arr[], int n, int i)
 {
-    string tempname = a->name;    // Intercambiar names
-    float tempsalary = a->salary; // Intercambiar salarys
-    a->name = b->name;
-    a->salary = b->salary;
-    b->name = tempname;
-    b->salary = tempsalary;
-}
+    int high = i;            
+    int left = 2 * i + 1; 
+    int right = 2 * i + 2;
 
-// Función heapify
-void heapify(Employee *root)
-{
-    if (!root)
-        return;
-
-    Employee *largest = root;
-    if (root->left && root->left->salary > largest->salary)
+    if (left < n && arr[left].salary > arr[high].salary)
     {
-        largest = root->left;
+        high = left;
     }
-    if (root->right && root->right->salary > largest->salary)
+    if (right < n && arr[right].salary > arr[high].salary)
     {
-        largest = root->right;
+        high = right;
     }
 
-    // Si el mayor no es la raíz
-    if (largest != root)
+    if (high != i)
     {
-        swap(root, largest);
-        heapify(largest);
+        swap(arr[i], arr[high]);
+        heapify(arr, n, high);
     }
 }
-
-void buildHeap(Employee *root)
+void heapsort(Employee arr[], int n)
 {
-    if (!root)
-        return;
+    for (int i = n / 2 - 1; i >= 0; i--)
+    {
+        heapify(arr, n, i);
+    }
 
-    buildHeap(root->left);
-    buildHeap(root->right);
-
-    heapify(root);
-}
-
-void heapSort(Employee *root)
-{
-    if (!root)
-        return;
-
-    buildHeap(root);
-}
-
-void printEmployees(Employee *root)
-{
-    if (!root)
-        return;
-
-    printEmployees(root->left);
-    cout << "{" << endl
-         << "   'name': '" << root->name << "'," << endl
-         << "   'salary': " << root->salary << endl
-         << "}," << endl;
-    printEmployees(root->right);
-}
-
-void freeMemory(Employee *root)
-{
-    if (!root)
-        return;
-
-    freeMemory(root->left);
-    freeMemory(root->right);
-    delete root;
+    for (int i = n - 1; i > 0; i--)
+    {
+        swap(arr[0], arr[i]);
+        heapify(arr, i, 0);  
+    }
 }
 
 int main()
 {
-    Employee *root = new Employee("Employee0", 40000.0f);
-    Employee *current = root;
-
-    for (int i = 1; i < 1000; ++i)
+    Employee employees[1000];
+    for (int i = 0; i < 1000; i++)
     {
-        string name = "Employee_" + to_string(i);
-        float salary = 40000.0f + i;
-        Employee *nuevoEmployee = new Employee(name, salary);
-
-        if (i % 2 == 1)
-        { // Hijo izquierdo
-            current->left = nuevoEmployee;
-        }
-        else
-        {
-            current->right = nuevoEmployee;
-            current = current->left ? current->left : current;
-        }
+        employees[i].name = "Employee_" + to_string(i + 1);
+        employees[i].salary = rand() % 10000 + 1000; 
     }
 
-    // cout << "Lista de Employees antes de ordenar:" << endl;
-    //  printEmployees(root);
+    int n = sizeof(employees) / sizeof(employees[0]);
 
-    heapSort(root);
-    cout << "\nEmployees ordenados por salary:" << endl;
-    printEmployees(root);
+    heapsort(employees, n);
 
-    freeMemory(root);
+    cout << "Salary employees order by desc:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Name: " << employees[i].name << ", Salary: " << employees[i].salary << endl;
+    }
 
     return 0;
 }
